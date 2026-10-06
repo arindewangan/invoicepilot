@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoicePilot — AI Invoicing Copilot (PayPal + AI)</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="/static/logo.png">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img class="logo" src="/static/logo.png" alt="InvoicePilot logo" onerror="this.style.display='none'">
+    <div class="brand">
+      <h1>Invoice<span>Pilot</span></h1>
+      <p>Agentic invoicing copilot for freelancers — chat, and it bills.</p>
+    </div>
+    <div class="badges">
+      <span class="badge ai" id="badge-llm">LLM: …</span>
+      <span class="badge" id="badge-paypal">PayPal: …</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2><span class="dot"></span> Chat with your agent</h2>
+      <div id="chat"></div>
+      <div class="chips" id="chips"></div>
+      <div class="inputrow">
+        <input id="input" type="text" placeholder='Try: Invoice Acme Corp $800 for the logo work, due Friday' autocomplete="off">
+        <button id="send">Send</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🔍 Agent trace <span style="font-weight:400;text-transform:none;letter-spacing:0">— every step, live</span></h2>
+      <div id="trace"><div class="trace-empty">Run a command and watch the agent think, plan and act here.</div></div>
+    </div>
+  </div>
+
+  <div class="card dash">
+    <h2 class="dashhead">💳 Invoice dashboard <span class="spacer"></span>
+      <button class="btn" id="btn-seed" style="display:none">✨ Load demo invoices</button>
+      <button class="btn" id="btn-refresh">↻ Refresh</button>
+    </h2>
+    <div id="tablewrap"><div class="empty">No invoices yet.</div></div>
+  </div>
+
+  <footer>
+    InvoicePilot · Built for the PayPal AI Hackathon · Uses the PayPal Sandbox API + an LLM of your choice.<br>
+    <span id="mode-note"></span>
+  </footer>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
