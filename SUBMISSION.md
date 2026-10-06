@@ -48,8 +48,8 @@ plan to the intent, and explaining each action as it goes.
 ## Links (TBD at submit time)
 - Demo video (YouTube, < 3 min): TBD
 - Live demo URL: TBD
-- GitHub repo: TBD
-- Static showcase (GitHub Pages): `demo/index.html`
+- GitHub repo: https://github.com/arindewangan/invoicepilot
+- Static showcase (GitHub Pages): https://arindewangan.github.io/invoicepilot/demo/
 
 ## Built with
 Python, Flask, PayPal REST Invoicing API v2 (sandbox), OpenAI-compatible LLM APIs,
