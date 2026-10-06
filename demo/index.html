@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoicePilot — Interactive Showcase (simulated)</title>
+<style>
+  :root{--bg:#0a0e1a;--card:#141d33;--card2:#1a2440;--border:#263354;--text:#e8edf7;--muted:#93a0bd;--accent:#4f7cff;--cyan:#22d3ee;--green:#34d399;--amber:#fbbf24;--purple:#a78bfa}
+  *{box-sizing:border-box}body{margin:0;font-family:"Inter","Segoe UI",system-ui,sans-serif;background:radial-gradient(1200px 600px at 80% -10%,#1b2a55 0%,var(--bg) 55%) fixed,var(--bg);color:var(--text);min-height:100vh}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 22px 60px}
+  .notice{background:rgba(251,191,36,.1);border:1px solid #6b4d16;color:var(--amber);border-radius:12px;padding:12px 16px;font-size:13.5px;margin-bottom:16px;line-height:1.6}
+  header{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .brand h1{margin:0;font-size:26px}.brand h1 span{background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .badges{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .badge{font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+  .badge.demo{color:var(--amber);border-color:#6b4d16}.badge.ai{color:var(--purple);border-color:#4c3a86}
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}@media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:linear-gradient(180deg,var(--card),#10182b);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .card h2{margin:0;padding:14px 18px;font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);border-bottom:1px solid var(--border)}
+  #chat{height:400px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:88%;padding:11px 14px;border-radius:12px;font-size:14px;line-height:1.55;white-space:pre-wrap}
+  .msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent),#3a5fd0);color:#fff;border-bottom-right-radius:4px}
+  .msg.bot{align-self:flex-start;background:var(--card2);border:1px solid var(--border);border-bottom-left-radius:4px}
+  .msg.bot b{color:var(--cyan)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px}
+  .chip{font-size:12px;padding:8px 13px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--cyan);cursor:pointer}
+  .chip:hover{background:rgba(34,211,238,.12);border-color:var(--cyan)}
+  #trace{height:400px;overflow-y:auto;padding:16px 18px;font-size:13px}
+  .tstep{border-left:2px solid var(--border);padding:2px 0 14px 16px;position:relative}
+  .tstep::before{content:"";position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--muted)}
+  .tstep.ok::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+  .tstep.info::before{background:var(--cyan)}
+  .tstep .tname{font-weight:700;font-family:monospace;font-size:12.5px}
+  .tstep .tdetail{color:var(--muted);margin-top:3px;line-height:1.5}
+  .dash{margin-top:18px}table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px}
+  .pill.SENT{background:rgba(251,191,36,.15);color:var(--amber);border-color:#6b4d16}
+  .pill.PAID{background:rgba(52,211,153,.14);color:var(--green);border:1px solid #6b4d16}
+  .pill.PAID{background:rgba(52,211,153,.14);color:var(--green);border:1px solid #1f5c46}
+  .mono{font-family:monospace;font-size:12px;color:var(--muted)}
+  .empty{padding:26px;text-align:center;color:var(--muted);font-size:14px}
+  footer{margin-top:26px;color:#5b6a8c;font-size:12px;text-align:center;line-height:1.7}
+  .cta{margin-top:18px;text-align:center}
+  .cta a{display:inline-block;background:linear-gradient(135deg,var(--accent),#3a5fd0);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:10px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="notice">⚠️ <b>Interactive showcase — simulated.</b> This static page replays a scripted InvoicePilot session with mock data so you can explore the UX without running the server. No real PayPal calls happen here. Run <span class="mono">python app.py</span> for the live app.</div>
+
+  <header>
+    <div class="brand">
+      <h1>Invoice<span>Pilot</span></h1>
+      <p>Agentic invoicing copilot for freelancers — PayPal + AI.</p>
+    </div>
+    <div class="badges">
+      <span class="badge ai">LLM: scripted demo</span>
+      <span class="badge demo">PayPal: simulated</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>💬 Chat (scripted replay)</h2>
+      <div id="chat"></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="card">
+      <h2>🔍 Agent trace</h2>
+      <div id="trace"><div class="empty">Pick a scripted command below to replay it.</div></div>
+    </div>
+  </div>
+
+  <div class="card dash">
+    <h2>💳 Invoice dashboard (simulated)</h2>
+    <div id="tablewrap"><div class="empty">Replay “Invoice Acme Corp…” to populate this dashboard.</div></div>
+  </div>
+
+  <div class="cta">
+    <a href="https://github.com/arindewangan/invoicepilot" target="_blank" rel="noopener">⭐ Get the code &amp; run it live — python app.py</a>
+    <p style="color:#5b6a8c;font-size:12px">Free PayPal sandbox credentials at developer.paypal.com — no real money, ever.</p>
+  </div>
+
+  <footer>InvoicePilot · PayPal AI Hackathon entry · MIT licensed</footer>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const traceBox = document.getElementById('trace');
+const tableWrap = document.getElementById('tablewrap');
+const invoices = [];
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}
+function addMsg(t,who){const d=document.createElement('div');d.className='msg '+who;d.innerHTML=md(t);chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function renderTrace(steps){
+  traceBox.innerHTML='';
+  steps.forEach(s=>{
+    const d=document.createElement('div');d.className='tstep '+s[1];
+    d.innerHTML=`<span class="tname">${esc(s[0])}</span><span style="color:#5b6a8c;font-size:11px;margin-left:8px">${s[3]}ms</span><div class="tdetail">${esc(s[2])}</div>`;
+    traceBox.appendChild(d);
+  });
+}
+function renderTable(){
+  if(!invoices.length){tableWrap.innerHTML='<div class="empty">Replay “Invoice Acme Corp…” to populate this dashboard.</div>';return}
+  tableWrap.innerHTML=`<table><thead><tr><th>Invoice</th><th>Client</th><th>For</th><th style="text-align:right">Amount</th><th>Due</th><th>Status</th></tr></thead><tbody>`+
+    invoices.map(r=>`<tr><td class="mono">${r.n}</td><td>${r.c}</td><td>${r.d}</td><td style="text-align:right"><b>USD ${r.a.toFixed(2)}</b></td><td class="mono">${r.due}</td><td><span class="pill ${r.s}">${r.s}</span> <span class="mono">demo</span></td></td></tr>`).join('')+`</tbody></table>`;
+}
+
+const SCENARIOS = {
+  create: {
+    user: "Invoice Acme Corp $800 for the logo work, due Friday",
+    bot: "Done! I created and sent a USD 800.00 invoice to Acme Corp for “the logo work” due 2026-10-09. (showcase simulation — no real invoice was created)\nInvoice DEMO-0001 is now SENT. Payment link: https://www.sandbox.paypal.com/invoice/p/DEMO-INV-… (simulated)\nI'll keep tracking it — ask me for the status anytime, or say “remind Acme Corp” if it goes overdue.",
+    trace: [
+      ["parse_intent","ok","Scripted demo parser extracted intent: create_invoice","38"],
+      ["plan","info","Plan: create_invoice → draft → create (PayPal) → send → track","2"],
+      ["draft","ok","Draft: Acme Corp — USD 800.00 for “the logo work”, due 2026-10-09","5"],
+      ["create","ok","PayPal (showcase) created draft DEMO-INV-A1B2C3D4 — status DRAFT","120"],
+      ["send","ok","Invoice sent — status SENT","96"],
+      ["track","ok","Tracking DEMO-INV-A1B2C3D4 — current status: SENT","11"],
+      ["done","ok","Turn complete in 272ms","272"],
+    ],
+    invoice: {n:"DEMO-0001",c:"Acme Corp",d:"the logo work",a:800,due:"2026-10-09",s:"SENT"},
+    label: "🧾 Invoice Acme Corp $800, due Friday"
+  },
+  status: {
+    user: "What's the status of the Acme Corp invoice?",
+    bot: "Invoice DEMO-0001 for Acme Corp — USD 800.00 — is currently **SENT** (showcase ledger). Payment link: https://www.sandbox.paypal.com/invoice/p/DEMO-INV-… (simulated)",
+    trace: [
+      ["parse_intent","ok","Scripted demo parser extracted intent: check_status","31"],
+      ["plan","info","Plan: check_status → look up invoice → fetch live status","1"],
+      ["lookup","ok","Found DEMO-0001 for Acme Corp","4"],
+      ["fetch_status","ok","Status: SENT (showcase ledger)","88"],
+      ["done","ok","Turn complete in 124ms","124"],
+    ],
+    label: "📊 Check the Acme invoice status"
+  },
+  remind: {
+    user: "Remind Acme Corp about their invoice",
+    bot: "Here's a polite reminder draft for Acme Corp (invoice DEMO-0001, currently SENT):\n\nHi Acme Corp,\n\nJust a friendly nudge — invoice DEMO-0001 for USD 800.00 was due on 2026-10-09. If you've already paid, please ignore this!\n\nThanks so much,\n— sent via InvoicePilot (template draft)\n\n⚠️ I drafted this but did NOT send it — review and send it yourself from your email.",
+    trace: [
+      ["parse_intent","ok","Scripted demo parser extracted intent: create_invoice","29"],
+      ["plan","info","Plan: send_reminder → find overdue → draft reminder (AI) → preview","2"],
+      ["find_overdue","ok","Selected DEMO-0001 for Acme Corp (USD 800.00, SENT)","6"],
+      ["draft_reminder","ok","Reminder drafted with template fallback","410"],
+      ["done","ok","Turn complete in 447ms","447"],
+    ],
+    label: "✉️ Draft a reminder for Acme Corp"
+  }
+};
+
+function play(key){
+  const s = SCENARIOS[key];
+  addMsg(s.user,'user');
+  setTimeout(()=>{
+    addMsg(s.bot,'bot');
+    renderTrace(s.trace);
+    if(s.invoice && !invoices.find(r=>r.n===s.invoice.n)){invoices.unshift(s.invoice);renderTable()}
+  }, 600);
+}
+
+const chips = document.getElementById('chips');
+Object.keys(SCENARIOS).forEach(k=>{
+  const b=document.createElement('button');b.className='chip';b.textContent=SCENARIOS[k].label;
+  b.onclick=()=>play(k);chips.appendChild(b);
+});
+
+addMsg("👋 I'm **InvoicePilot** (scripted showcase).\n\nClick a command below to replay what the live agent does — full trace included →",'bot');
+</script>
+</body>
+</html>
